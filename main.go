@@ -9,7 +9,7 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-type Options struct {
+type options struct {
 	MaxThreads uint   `short:"j" long:"threads" description:"Max number of downloader threads" default:"10"`
 	Directory  string `short:"d" long:"directory" description:"download directory" default:"."`
 }
@@ -26,7 +26,7 @@ func processThread(url string, maxThreads uint, dir string) {
 }
 
 func main() {
-	var opts Options
+	var opts options
 
 	args, err := flags.ParseArgs(&opts, os.Args)
 	if err != nil {
