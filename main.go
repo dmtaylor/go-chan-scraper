@@ -14,6 +14,10 @@ type Options struct {
 	Directory  string `short:"d" long:"directory" description:"download directory" default:"."`
 }
 
+func imgWorker(images, errors chan string, dir string) {
+	// TODO
+}
+
 func processThread(url string, maxThreads uint, dir string) {
 	fmt.Printf("Downloading thread %s\n", url)
 
