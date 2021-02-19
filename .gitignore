@@ -3,3 +3,6 @@ go-chan-scraper
 
 # dev files
 .vscode
+
+# test out dir
+out
