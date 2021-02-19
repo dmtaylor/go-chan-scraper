@@ -134,6 +134,7 @@ func processThread(urlStr string, maxThreads uint, dir string, extract extractor
 func main() {
 	var opts options
 
+	// TODO change getopt lib for better help management
 	args, err := flags.ParseArgs(&opts, os.Args)
 	if err != nil {
 		log.Fatal(err)

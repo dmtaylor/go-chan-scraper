@@ -23,8 +23,15 @@ func Extract4Chan(body io.ReadCloser, fileChannel chan ImageFile) error {
 		if err != nil {
 			log.Printf("Failed to parse url %s: %v\n", link, err)
 		}
+		var filename string
+		title, exists := s.Attr("title")
+		if exists {
+			filename = title
+		} else {
+			filename = s.Text()
+		}
 		imgFile := ImageFile{
-			FileName: s.Text(),
+			FileName: filename,
 			FileUrl:  *fileLink,
 		}
 		fileChannel <- imgFile
