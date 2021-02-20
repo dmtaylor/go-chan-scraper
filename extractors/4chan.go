@@ -22,6 +22,7 @@ func Extract4Chan(body io.ReadCloser, fileChannel chan ImageFile) error {
 		fileLink, err := url.Parse("https:" + link)
 		if err != nil {
 			log.Printf("Failed to parse url %s: %v\n", link, err)
+			return
 		}
 		var filename string
 		title, exists := s.Attr("title")

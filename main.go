@@ -18,7 +18,7 @@ import (
 type options struct {
 	MaxThreads uint   `short:"j" long:"threads" description:"Max number of downloader threads" default:"10"`
 	Directory  string `short:"d" long:"directory" description:"download directory" default:"."`
-	Extractor  string `short:"e" long:"engine" description:"Site engine to use" choice:"4chan" default:"4chan"`
+	Extractor  string `short:"e" long:"engine" description:"Site engine to use" choice:"4chan" choice:"8kun" default:"4chan"`
 }
 
 type extractor func(io.ReadCloser, chan extractors.ImageFile) error
@@ -135,6 +135,8 @@ func main() {
 	switch opts.Extractor {
 	case "4chan":
 		extractor = extractors.Extract4Chan
+	case "8kun":
+		extractor = extractors.Extract8Kun
 	default:
 		log.Fatalf("Invalid extractor type: %s\n", opts.Extractor)
 	}
