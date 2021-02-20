@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"mime"
 	"net/http"
 	"net/url"
 	"os"
@@ -40,7 +39,7 @@ func imgWorker(
 			continue
 		}
 		defer resp.Body.Close()
-		err = validateResponse(resp, nil)
+		err = util.ValidateHttpResponse(resp, nil)
 		if err != nil {
 			errors <- extractors.ImageError{
 				Err:     err,
@@ -72,22 +71,6 @@ func proccessErrors(errChan chan extractors.ImageError, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
-func validateResponse(resp *http.Response, requiredType *string) error {
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("Failed to get %s with status %s: %+v", resp.Request.URL.String(), resp.Status, resp)
-	}
-	if requiredType != nil {
-		mediatype, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return err
-		}
-		if mediatype != *requiredType {
-			return fmt.Errorf("got invalid media type %s for page %s", mediatype, resp.Request.URL.String())
-		}
-	}
-	return nil
-}
-
 func processThread(urlStr string, maxThreads uint, dir string, extract extractor) error {
 	fmt.Printf("Downloading thread %s\n", urlStr)
 	url, err := url.ParseRequestURI(urlStr)
@@ -100,7 +83,7 @@ func processThread(urlStr string, maxThreads uint, dir string, extract extractor
 	}
 	defer resp.Body.Close()
 	requiredType := "text/html"
-	err = validateResponse(resp, &requiredType)
+	err = util.ValidateHttpResponse(resp, &requiredType)
 	if err != nil {
 		return err
 	}
