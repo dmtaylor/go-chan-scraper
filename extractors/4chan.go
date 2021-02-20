@@ -32,7 +32,7 @@ func Extract4Chan(body io.ReadCloser, fileChannel chan ImageFile) error {
 		}
 		imgFile := ImageFile{
 			FileName: filename,
-			FileUrl:  *fileLink,
+			FileURL:  *fileLink,
 		}
 		fileChannel <- imgFile
 	})

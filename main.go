@@ -31,11 +31,11 @@ func imgWorker(
 	wg *sync.WaitGroup) {
 
 	for img := range images {
-		resp, err := http.Get(img.FileUrl.String())
+		resp, err := http.Get(img.FileURL.String())
 		if err != nil {
 			errors <- extractors.ImageError{
 				Err:     err,
-				FileUrl: img.FileUrl,
+				FileURL: img.FileURL,
 			}
 			continue
 		}
@@ -44,7 +44,7 @@ func imgWorker(
 		if err != nil {
 			errors <- extractors.ImageError{
 				Err:     err,
-				FileUrl: img.FileUrl,
+				FileURL: img.FileURL,
 			}
 			continue
 		}
@@ -54,7 +54,7 @@ func imgWorker(
 		if err != nil {
 			errors <- extractors.ImageError{
 				Err:     err,
-				FileUrl: img.FileUrl,
+				FileURL: img.FileURL,
 			}
 			continue
 		}
@@ -67,7 +67,7 @@ func imgWorker(
 
 func proccessErrors(errChan chan extractors.ImageError, wg *sync.WaitGroup) {
 	for err := range errChan {
-		fmt.Fprintf(os.Stderr, "Failed to get file %s: %v", err.FileUrl.String(), err.Err)
+		fmt.Fprintf(os.Stderr, "Failed to get file %s: %v", err.FileURL.String(), err.Err)
 	}
 	wg.Done()
 }
