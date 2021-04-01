@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime/pprof"
 	"sync"
 
 	"github.com/dmtaylor/go-chan-scraper/extractors"
@@ -16,9 +17,10 @@ import (
 )
 
 type options struct {
-	MaxThreads uint   `short:"j" long:"threads" description:"Max number of downloader threads" default:"10"`
-	Directory  string `short:"d" long:"directory" description:"download directory" default:"."`
-	Extractor  string `short:"e" long:"engine" description:"Site engine to use" choice:"4chan" choice:"8kun" default:"4chan"`
+	MaxThreads uint    `short:"j" long:"threads" description:"Max number of downloader threads" default:"10"`
+	Directory  string  `short:"d" long:"directory" description:"download directory" default:"."`
+	Extractor  string  `short:"e" long:"engine" description:"Site engine to use" choice:"4chan" choice:"8kun" default:"4chan"`
+	Profile    *string `short:"p" long:"profile" description:"enable profile data"`
 }
 
 type extractor func(io.ReadCloser, chan extractors.ImageFile) error
@@ -121,6 +123,15 @@ func main() {
 	args, err := flags.ParseArgs(&opts, os.Args)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if opts.Profile != nil {
+		f, err := os.Create(*opts.Profile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
 	}
 
 	isDir, err := util.DirExists(opts.Directory)
