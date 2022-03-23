@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/url"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -24,13 +25,8 @@ func Extract4Chan(body io.ReadCloser, fileChannel chan ImageFile) error {
 			log.Printf("Failed to parse url %s: %v\n", link, err)
 			return
 		}
-		var filename string
-		title, exists := s.Attr("title")
-		if exists {
-			filename = title
-		} else {
-			filename = s.Text()
-		}
+		components := strings.Split(link, "/")
+		filename := components[len(components)-1]
 		imgFile := ImageFile{
 			FileName: filename,
 			FileURL:  *fileLink,
